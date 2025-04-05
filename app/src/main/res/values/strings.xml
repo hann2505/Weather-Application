@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Weather Application</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="location">location</string>
+    <string name="time">time</string>
+    <string name="condition">condition</string>
+    <string name="highest_temp">highest</string>
+    <string name="lowest">lowest</string>
+    <string name="notification_sample">%1$s shared a post</string>
+    <string name="search_for_a_location">Search for a location</string>
+    <string name="my_location">My Location</string>
+
+</resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="night_black">#070B34</color>
+    <color name="night_black_2">#141852</color>
+    <color name="night_black_3">#2B2F77</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="blue">#87CEFA</color>
+    <color name="neuter_blue">#00BFFE</color>
+    <color name="dark_blue">#1E90FF</color>
+    <color name="light_blue">#9BE8F0</color>
+    <color name="dark_gray">#E6FBFA</color>
+    <color name="gray">#a9a9a9</color>
+    <color name="light_gray">#d3d3d3</color>
+    <color name="thunder_1">#4b0081</color>
+    <color name="thunder_2">#6a5acd</color>
+    <color name="thunder_3">#9370db</color>
+</resources>
