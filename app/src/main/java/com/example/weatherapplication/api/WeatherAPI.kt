@@ -1,6 +1,7 @@
 package com.example.weatherapplication.api
 
 import com.example.weatherapplication.entity.LocationData
+import com.example.weatherapplication.entity.WeatherData
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -17,4 +18,11 @@ interface WeatherAPI {
         @Query("key") apiKey: String = API_KEY,
         @Query("q") location: String
     ): Response<List<LocationData>>
+
+    @GET("forecast.json")
+    suspend fun getWeatherData(
+        @Query("key") apiKey: String = API_KEY,
+        @Query("q") location: String,
+        @Query("days") days: Int = 3
+    ): Response<WeatherData>
 }

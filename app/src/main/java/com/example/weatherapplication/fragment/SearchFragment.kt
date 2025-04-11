@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherapplication.R
@@ -16,7 +15,6 @@ import com.example.weatherapplication.adapter.LocationAdapter
 import com.example.weatherapplication.databinding.FragmentSearchBinding
 import com.example.weatherapplication.viewmodel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
@@ -39,11 +37,19 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         subscribeSearchView()
         setUpRecyclerView()
         onBackPressed()
+        onItemClicked()
     }
 
     private fun onBackPressed() {
         binding.backBtn.setOnClickListener {
             findNavController().popBackStack()
+        }
+    }
+
+    private fun onItemClicked() {
+        locationAdapter.setOnItemClickListener { coordination ->
+            val action = SearchFragmentDirections.actionSearchFragmentToLocationFragment(coordination)
+            findNavController().navigate(action)
         }
     }
 
@@ -75,13 +81,10 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun searchData(query: String?) {
         if (!query.isNullOrEmpty()) {
-            locationViewModel.searchLocation(requireContext(), query)
-            lifecycleScope.launch {
-                locationViewModel.queryLocation.collect { locations ->
-                    Log.d("SearchFragment", "Search location: $locations")
-                    locationAdapter.submitList(locations)
-                }
-
+            locationViewModel.searchLocation((query))
+            locationViewModel.queryLocation.observe(viewLifecycleOwner) { locations ->
+                Log.d("SearchFragment", "Search location: $locations")
+                locationAdapter.submitList(locations)
             }
         }
         else {

@@ -17,9 +17,9 @@ object TimeConverter {
     }
 
     private fun getDayOfWeekFromTimestamp(): String {
-        val formatter = DateTimeFormatter.ofPattern("EEEE") // "EEEE" gives full day name (e.g., Monday)
+        val formatter = DateTimeFormatter.ofPattern("EEEE")
         return Instant.ofEpochMilli(currentTime)
-            .atZone(ZoneId.systemDefault()) // Convert to local time zone
+            .atZone(ZoneId.systemDefault())
             .format(formatter)
     }
 

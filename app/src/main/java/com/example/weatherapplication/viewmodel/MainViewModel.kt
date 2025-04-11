@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherapplication.data.LocationDataRepository
+import com.example.weatherapplication.data.WeatherDataRepository
+import com.example.weatherapplication.entity.WeatherData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,29 +15,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val locationDataRepository: LocationDataRepository
+    private val weatherDataRepository: WeatherDataRepository
 ) : ViewModel() {
+    private var _weatherData = MutableStateFlow<WeatherData?>(null)
+    val weatherData: StateFlow<WeatherData?> = _weatherData
 
-    private var _currentLocation = MutableStateFlow("")
-    val currentLocation: StateFlow<String> = _currentLocation
-
-    private fun getLocationName(context: Context, latitude: Double, longitude: Double): String {
-        return locationDataRepository.getLocationName(context, latitude, longitude)
-    }
-
-    fun getCurrentLocation(context: Context) {
+    fun getWeatherData(latitude: Double, longitude: Double) {
         viewModelScope.launch {
-            locationDataRepository.getCurrentLocation(
-                context = context,
-                onSuccess = { latitude, longitude ->
-                    _currentLocation.value =
-                        getLocationName(context, latitude = latitude, longitude = longitude)
-                },
-                onFailure = { exception ->
-                    Log.e("MainViewModel", "Error getting current location", exception)
-                }
-            )
+            val weatherData = weatherDataRepository.getWeatherData(latitude, longitude)
+            _weatherData.value = weatherData
+            Log.d("MainViewModel", "Weather data: $weatherData")
         }
     }
-
 }

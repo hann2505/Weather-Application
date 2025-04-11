@@ -8,6 +8,7 @@ import android.util.Log
 import com.example.weatherapplication.api.RetrofitInstance
 import com.example.weatherapplication.api.WeatherAPI
 import com.example.weatherapplication.entity.LocationData
+import com.example.weatherapplication.entity.WeatherData
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -35,47 +36,6 @@ class LocationDataRepository {
         }.addOnFailureListener { exception ->
             onFailure(exception)
             Log.e("WeatherDataRepository", "Error getting current location", exception)
-        }
-    }
-
-    fun getLocationName(context: Context, latitude: Double, longitude: Double): String {
-        val geocoder = Geocoder(context, Locale.getDefault())
-
-        return try {
-            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
-            if (!addresses.isNullOrEmpty()) {
-                addresses[0].adminArea
-            } else {
-                "Location not found"
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            "Unable to get location"
-        }
-    }
-
-    fun getLocationFullName(context: Context, latitude: Double, longitude: Double): String {
-        val geocoder = Geocoder(context, Locale.getDefault())
-
-        return try {
-            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
-            if (!addresses.isNullOrEmpty()) {
-                val fullAddress = buildString {
-                    for (i in 0..addresses[0].maxAddressLineIndex) {
-                        append(addresses[0].locality)
-                        append(", ")
-                        append(addresses[0].adminArea)
-                        append(", ")
-                        append(addresses[0].countryName)
-                    }
-                }
-                fullAddress.trimEnd(',', ' ')
-            } else {
-                "Location not found"
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            "Unable to get location"
         }
     }
 

@@ -1,8 +1,8 @@
 package com.example.weatherapplication.fragment
 
-import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,15 +10,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.location.LocationManagerCompat.getCurrentLocation
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.weatherapplication.R
+import androidx.navigation.fragment.navArgs
 import com.example.weatherapplication.databinding.FragmentLocationBinding
+import com.example.weatherapplication.extension.LocationConverter
 import com.example.weatherapplication.extension.TimeConverter
+import com.example.weatherapplication.viewmodel.LocationViewModel
 import com.example.weatherapplication.viewmodel.MainViewModel
-import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -27,7 +27,10 @@ class LocationFragment : Fragment() {
 
     private lateinit var binding: FragmentLocationBinding
 
+    private val args: LocationFragmentArgs by navArgs()
+
     private val mMainViewModel: MainViewModel by viewModels()
+    private val mLocationViewModel: LocationViewModel by viewModels()
 
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -55,6 +58,12 @@ class LocationFragment : Fragment() {
         getTime()
         proceedWithCurrentLocation()
 
+        lifecycleScope.launch {
+            mLocationViewModel.currentLocation.collect { location ->
+                binding.location.text = location
+            }
+        }
+
         binding.refreshLayout.setOnRefreshListener {
             getTime()
             proceedWithCurrentLocation()
@@ -64,12 +73,6 @@ class LocationFragment : Fragment() {
         binding.mapBtn.setOnClickListener {
             navigateToSearchFragment()
         }
-
-        lifecycleScope.launch {
-            mMainViewModel.currentLocation.collect { location ->
-                binding.location.text = location
-            }
-        }
     }
 
     //TODO should be the time of the location
@@ -78,7 +81,17 @@ class LocationFragment : Fragment() {
     }
 
     private fun getCurrentLocation() {
-        mMainViewModel.getCurrentLocation(requireContext())
+        mLocationViewModel.getCurrentLocation(requireContext())
+        mLocationViewModel.getCurrentLocationCoordinates(requireContext())
+    }
+
+    private fun getWeatherData() {
+        lifecycleScope.launch {
+            mLocationViewModel.coordinates.observe(viewLifecycleOwner) { coordinates ->
+                mMainViewModel.getWeatherData(coordinates.first, coordinates.second)
+                Log.d("LocationFragment", "Coordinates: ${coordinates.first }, ${coordinates.second}")
+            }
+        }
     }
 
     private fun isLocationPermissionGranted(): Boolean {
@@ -94,7 +107,15 @@ class LocationFragment : Fragment() {
 
     private fun proceedWithCurrentLocation() {
         if (isLocationPermissionGranted()) {
-            getCurrentLocation()
+            if (args.coordination != null) {
+                mMainViewModel.getWeatherData(args.coordination!!.lat, args.coordination!!.lon)
+                mLocationViewModel.getRemoteLocation(requireContext(), args.coordination!!.lat, args.coordination!!.lon)
+            }
+            else {
+                getCurrentLocation()
+                getWeatherData()
+            }
+
         } else {
             requestLocationPermission()
         }

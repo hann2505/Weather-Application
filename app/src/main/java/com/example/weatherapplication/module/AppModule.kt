@@ -1,7 +1,7 @@
 package com.example.weatherapplication.module
 
-import com.example.weatherapplication.api.WeatherAPI
 import com.example.weatherapplication.data.LocationDataRepository
+import com.example.weatherapplication.data.WeatherDataRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,5 +14,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWeatherDataRepository() = LocationDataRepository()
+    fun provideLocationDataRepository() = LocationDataRepository()
+
+    @Provides
+    @Singleton
+    fun provideWeatherDataRepository() = WeatherDataRepository()
 }
