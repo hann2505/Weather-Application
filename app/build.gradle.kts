@@ -90,5 +90,10 @@ dependencies {
     //Swipe to refresh
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
+    //Glide
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
+
+
 
 }

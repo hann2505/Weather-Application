@@ -2,17 +2,12 @@ package com.example.weatherapplication.data
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Address
-import android.location.Geocoder
 import android.util.Log
 import com.example.weatherapplication.api.RetrofitInstance
-import com.example.weatherapplication.api.WeatherAPI
 import com.example.weatherapplication.entity.LocationData
-import com.example.weatherapplication.entity.WeatherData
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
-import java.util.Locale
 
 class LocationDataRepository {
 

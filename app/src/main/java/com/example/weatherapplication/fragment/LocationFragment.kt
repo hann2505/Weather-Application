@@ -14,9 +14,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.weatherapplication.adapter.WeatherAdapter
 import com.example.weatherapplication.databinding.FragmentLocationBinding
-import com.example.weatherapplication.extension.LocationConverter
-import com.example.weatherapplication.extension.TimeConverter
+import com.example.weatherapplication.entity.forecast.MainForecast
 import com.example.weatherapplication.viewmodel.LocationViewModel
 import com.example.weatherapplication.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,6 +32,8 @@ class LocationFragment : Fragment() {
 
     private val mMainViewModel: MainViewModel by viewModels()
     private val mLocationViewModel: LocationViewModel by viewModels()
+
+    private val weatherAdapter = WeatherAdapter()
 
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -55,17 +58,32 @@ class LocationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getTime()
         proceedWithCurrentLocation()
+        setupRecyclerView()
+
+        mLocationViewModel.location.observe(viewLifecycleOwner) { location ->
+            mMainViewModel.weatherData.observe(viewLifecycleOwner) { weatherData ->
+                val mainForecast = MainForecast(
+                    localtime = location!!.localtime,
+                    temp = weatherData.current.temperature,
+                    condition = weatherData.current.condition,
+                    location = location.region
+                )
+                Log.d("LocationFragment", "MainForecast: $mainForecast")
+
+                weatherAdapter.addItem(mainForecast)
+
+            }
+
+        }
 
         lifecycleScope.launch {
             mLocationViewModel.currentLocation.collect { location ->
-                binding.location.text = location
+                Log.d("LocationFragment", "Current location: $location")
             }
         }
 
         binding.refreshLayout.setOnRefreshListener {
-            getTime()
             proceedWithCurrentLocation()
             binding.refreshLayout.isRefreshing = false
         }
@@ -75,9 +93,13 @@ class LocationFragment : Fragment() {
         }
     }
 
-    //TODO should be the time of the location
-    private fun getTime() {
-        binding.time.text = TimeConverter.convertTimeToReadableData()
+    private fun setupRecyclerView() {
+        binding.recyclerView.layoutManager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        binding.recyclerView.adapter = weatherAdapter
     }
 
     private fun getCurrentLocation() {
@@ -110,6 +132,7 @@ class LocationFragment : Fragment() {
             if (args.coordination != null) {
                 mMainViewModel.getWeatherData(args.coordination!!.lat, args.coordination!!.lon)
                 mLocationViewModel.getRemoteLocation(requireContext(), args.coordination!!.lat, args.coordination!!.lon)
+                mLocationViewModel.getLocation(requireContext(), args.coordination!!.lat, args.coordination!!.lon)
             }
             else {
                 getCurrentLocation()

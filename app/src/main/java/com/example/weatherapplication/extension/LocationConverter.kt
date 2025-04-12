@@ -13,7 +13,39 @@ object LocationConverter {
         return try {
             val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
             if (!addresses.isNullOrEmpty()) {
+                addresses[0].locality
+            } else {
+                "Location not found"
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            "Unable to get location"
+        }
+    }
+
+    fun getLocationRegion(context: Context, latitude: Double, longitude: Double): String {
+        val geocoder = Geocoder(context, Locale.getDefault())
+
+        return try {
+            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+            if (!addresses.isNullOrEmpty()) {
                 addresses[0].adminArea
+            } else {
+                "Location not found"
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            "Unable to get location"
+        }
+    }
+
+    fun getLocationCountry(context: Context, latitude: Double, longitude: Double): String {
+        val geocoder = Geocoder(context, Locale.getDefault())
+
+        return try {
+            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+            if (!addresses.isNullOrEmpty()) {
+                addresses[0].countryName
             } else {
                 "Location not found"
             }

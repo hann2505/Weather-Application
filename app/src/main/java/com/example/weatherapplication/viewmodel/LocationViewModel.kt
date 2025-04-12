@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherapplication.data.LocationDataRepository
 import com.example.weatherapplication.entity.Coordination
+import com.example.weatherapplication.entity.LocationData
 import com.example.weatherapplication.extension.LocationConverter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +31,9 @@ class LocationViewModel @Inject constructor(
     private var _currentLocation = MutableStateFlow("")
     val currentLocation: StateFlow<String> = _currentLocation
 
+    private var _location = MutableLiveData<LocationData>()
+    val location: LiveData<LocationData?> = _location
+
     private var _coordinates = MutableLiveData<Pair<Double, Double>>()
     val coordinates: LiveData<Pair<Double, Double>> = _coordinates
 
@@ -37,13 +41,20 @@ class LocationViewModel @Inject constructor(
         return LocationConverter.getLocationName(context, latitude, longitude)
     }
 
+    private fun getLocationRegion(context: Context, latitude: Double, longitude: Double): String {
+        return LocationConverter.getLocationRegion(context, latitude, longitude)
+    }
+
+    private fun getLocationCountry(context: Context, latitude: Double, longitude: Double): String {
+        return LocationConverter.getLocationCountry(context, latitude, longitude)
+    }
+
     fun getCurrentLocation(context: Context) {
         viewModelScope.launch {
             locationDataRepository.getCurrentLocation(
                 context = context,
                 onSuccess = { latitude, longitude ->
-                    _currentLocation.value =
-                        getLocationName(context, latitude = latitude, longitude = longitude)
+                    getLocation(context, latitude, longitude)
                 },
                 onFailure = { exception ->
                     Log.e("MainViewModel", "Error getting current location", exception)
@@ -55,6 +66,18 @@ class LocationViewModel @Inject constructor(
     fun getRemoteLocation(context: Context, latitude: Double, longitude: Double) {
         _currentLocation.value =
             getLocationName(context, latitude = latitude, longitude = longitude)
+    }
+
+    fun getLocation(context: Context, latitude: Double, longitude: Double) {
+        val locationData = LocationData(
+            name = getLocationName(context, latitude, longitude),
+            region = getLocationRegion(context, latitude, longitude),
+            country = getLocationCountry(context, latitude, longitude),
+            localtime = "",
+            lat = latitude,
+            lon = longitude
+        )
+        _location.postValue(locationData)
     }
 
     fun getCurrentLocationCoordinates(context: Context) {

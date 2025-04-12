@@ -10,5 +10,6 @@
     <string name="notification_sample">%1$s shared a post</string>
     <string name="search_for_a_location">Search for a location</string>
     <string name="my_location">My Location</string>
+    <string name="temp_c">%1$.1f °</string>
 
 </resources>
