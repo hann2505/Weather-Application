@@ -7,4 +7,6 @@ data class MainForecast(
     val temp: Double,
     val condition: WeatherCondition,
     val location: String,
+    val maxtemp_c: Double,
+    val mintemp_c: Double
 )

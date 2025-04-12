@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapplication.databinding.MyLocationItemBinding
 import com.example.weatherapplication.databinding.SearchItemBinding
-import com.example.weatherapplication.entity.Coordination
-import com.example.weatherapplication.entity.LocationData
+import com.example.weatherapplication.entity.WeatherData
+import com.example.weatherapplication.entity.forecast.UserItem
 import com.example.weatherapplication.extension.LocationConverter
 
 class LocationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
@@ -19,33 +19,31 @@ class LocationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
         private const val TYPE_SEARCH_ITEM = 1
     }
 
-    private var onItemClickListener: ((Coordination) -> Unit)? = null
+    private var onItemClickListener: ((WeatherData) -> Unit)? = null
 
-    fun setOnItemClickListener(listener: (Coordination) -> Unit) {
+    fun setOnItemClickListener(listener: (WeatherData) -> Unit) {
         onItemClickListener = listener
     }
 
     inner class UserItemViewHolder(
         private val binding: MyLocationItemBinding
     ): RecyclerView.ViewHolder(binding.root) {
-        fun bindData(locationData: LocationData) {
-            val locationName = "${locationData.name}, ${locationData.region}, ${locationData.country}"
-            binding.location.text = locationName
+        fun bindData(userItem: UserItem) {
+
         }
     }
 
     inner class SearchItemViewHolder(
         private val binding: SearchItemBinding
     ): RecyclerView.ViewHolder(binding.root) {
-        fun bindData(coordination: Coordination) {
+        fun bindData(weatherData: WeatherData) {
             binding.searchLocation.text = LocationConverter.getLocationFullName(
                 binding.root.context,
-                coordination.lat,
-                coordination.lon
+                weatherData.location.lat,
+                weatherData.location.lon
             )
-            Log.d("LocationAdapter", "Search: $coordination")
+            Log.d("LocationAdapter", "Search: ${weatherData.location}")
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -73,13 +71,13 @@ class LocationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is UserItemViewHolder -> {
-                holder.bindData(items[position] as LocationData)
+                holder.bindData(items[position] as UserItem)
             }
             is SearchItemViewHolder -> {
-                holder.bindData(items[position] as Coordination)
+                holder.bindData(items[position] as WeatherData)
                 holder.itemView.setOnClickListener {
                     onItemClickListener?.let {
-                        it((items[position] as Coordination))
+                        it((items[position] as WeatherData))
                     }
                 }
             }
@@ -88,8 +86,8 @@ class LocationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
-            is LocationData -> TYPE_USER_ITEM
-            is Coordination -> TYPE_SEARCH_ITEM
+            is WeatherData -> TYPE_SEARCH_ITEM
+            is UserItem -> TYPE_USER_ITEM
             else -> throw IllegalArgumentException("Invalid item type")
         }
     }
@@ -97,6 +95,12 @@ class LocationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     fun submitList(newList: List<Any>) {
         items.clear()
         items.addAll(newList)
+        notifyDataSetChanged()
+    }
+
+    fun emptyList() {
+        items.clear()
+        items.add(emptyList())
         notifyDataSetChanged()
     }
 

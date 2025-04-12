@@ -17,8 +17,8 @@
             android:id="@+id/action_locationFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
         <argument
-            android:name="coordination"
-            app:argType="com.example.weatherapplication.entity.Coordination"
+            android:name="weatherData"
+            app:argType="com.example.weatherapplication.entity.WeatherData"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>

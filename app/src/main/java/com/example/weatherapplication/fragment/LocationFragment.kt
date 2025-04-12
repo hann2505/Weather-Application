@@ -67,11 +67,15 @@ class LocationFragment : Fragment() {
                     localtime = location!!.localtime,
                     temp = weatherData.current.temperature,
                     condition = weatherData.current.condition,
-                    location = location.region
+                    location = location.region,
+                    maxtemp_c = weatherData.forecast.forecastDay[0].day.maxtemp_c,
+                    mintemp_c = weatherData.forecast.forecastDay[0].day.mintemp_c
                 )
                 Log.d("LocationFragment", "MainForecast: $mainForecast")
 
-                weatherAdapter.addItem(mainForecast)
+                weatherAdapter.addFirst(mainForecast)
+                weatherAdapter.addSecond(weatherData.forecast.forecastDay[0])
+                weatherAdapter.addLast(weatherData.forecast)
 
             }
 
@@ -129,10 +133,10 @@ class LocationFragment : Fragment() {
 
     private fun proceedWithCurrentLocation() {
         if (isLocationPermissionGranted()) {
-            if (args.coordination != null) {
-                mMainViewModel.getWeatherData(args.coordination!!.lat, args.coordination!!.lon)
-                mLocationViewModel.getRemoteLocation(requireContext(), args.coordination!!.lat, args.coordination!!.lon)
-                mLocationViewModel.getLocation(requireContext(), args.coordination!!.lat, args.coordination!!.lon)
+            if (args.weatherData != null) {
+                mMainViewModel.getWeatherData(args.weatherData!!.location.lat, args.weatherData!!.location.lon)
+                mLocationViewModel.getRemoteLocation(requireContext(), args.weatherData!!.location.lat, args.weatherData!!.location.lon)
+                mLocationViewModel.getRemoteLocation(args.weatherData!!.location)
             }
             else {
                 getCurrentLocation()
@@ -147,9 +151,5 @@ class LocationFragment : Fragment() {
     private fun navigateToSearchFragment() {
         val action = LocationFragmentDirections.actionLocationFragmentToSearchFragment()
         findNavController().navigate(action)
-    }
-
-    private fun navigateToMapFragment() {
-
     }
 }

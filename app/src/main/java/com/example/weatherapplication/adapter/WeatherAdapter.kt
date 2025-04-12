@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapplication.adapter.viewholder.DailyForecastViewHolder
 import com.example.weatherapplication.adapter.viewholder.HourlyForecastViewHolder
 import com.example.weatherapplication.adapter.viewholder.MainForecastViewHolder
-import com.example.weatherapplication.databinding.DailyForecastItemBinding
-import com.example.weatherapplication.databinding.HourlyForecastItemBinding
+import com.example.weatherapplication.databinding.DailyForecastWeatherBinding
+import com.example.weatherapplication.databinding.HourlyForecastWeatherBinding
 import com.example.weatherapplication.databinding.MainForecastItemBinding
-import com.example.weatherapplication.entity.forecast.DailyForecast
-import com.example.weatherapplication.entity.forecast.HourlyForecast
+import com.example.weatherapplication.entity.DayForecast
+import com.example.weatherapplication.entity.Forecast
 import com.example.weatherapplication.entity.forecast.MainForecast
 
 class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -33,14 +33,14 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 )
             )
             TYPE_HOURLY_FORECAST -> HourlyForecastViewHolder(
-                HourlyForecastItemBinding.inflate(
+                HourlyForecastWeatherBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
             TYPE_DAILY_FORECAST -> DailyForecastViewHolder(
-                DailyForecastItemBinding.inflate(
+                DailyForecastWeatherBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -58,10 +58,11 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bindData(items[position] as MainForecast)
             }
             is HourlyForecastViewHolder -> {
-                holder.bindData(items[position] as HourlyForecast)
+                holder.setupRecyclerView()
+                holder.submitList((items[position] as DayForecast).hour)
             }
             is DailyForecastViewHolder -> {
-                holder.bindData(items[position] as DailyForecast)
+                holder.bindData(items[position] as Forecast)
             }
         }
     }
@@ -69,14 +70,24 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
         return when(items[position]) {
             is MainForecast -> TYPE_MAIN_FORECAST
-            is HourlyForecast -> TYPE_HOURLY_FORECAST
-            is DailyForecast -> TYPE_DAILY_FORECAST
+            is DayForecast -> TYPE_HOURLY_FORECAST
+            is Forecast -> TYPE_DAILY_FORECAST
             else -> throw IllegalArgumentException("Invalid item type")
         }
     }
 
-    fun addItem(item: Any) {
+    fun addFirst(item: Any) {
         items.clear()
+        items.add(item)
+        notifyDataSetChanged()
+    }
+
+    fun addSecond(item: Any) {
+        items.add(1, item)
+        notifyDataSetChanged()
+    }
+
+    fun addLast(item: Any) {
         items.add(item)
         notifyDataSetChanged()
     }

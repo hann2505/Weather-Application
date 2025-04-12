@@ -5,8 +5,8 @@
     <string name="location">location</string>
     <string name="time">time</string>
     <string name="condition">condition</string>
-    <string name="highest_temp">highest</string>
-    <string name="lowest">lowest</string>
+    <string name="highest_temp">H: %1$.1f °</string>
+    <string name="lowest">L: %1$.1f °</string>
     <string name="notification_sample">%1$s shared a post</string>
     <string name="search_for_a_location">Search for a location</string>
     <string name="my_location">My Location</string>

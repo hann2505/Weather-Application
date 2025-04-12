@@ -8,13 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.weatherapplication.R
 import com.example.weatherapplication.adapter.LocationAdapter
 import com.example.weatherapplication.databinding.FragmentSearchBinding
 import com.example.weatherapplication.viewmodel.LocationViewModel
+import com.example.weatherapplication.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
@@ -23,6 +25,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
     private lateinit var locationAdapter: LocationAdapter
 
     private val locationViewModel: LocationViewModel by viewModels()
+    private val weatherViewModel: MainViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,8 +50,9 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun onItemClicked() {
-        locationAdapter.setOnItemClickListener { coordination ->
-            val action = SearchFragmentDirections.actionSearchFragmentToLocationFragment(coordination)
+        locationAdapter.setOnItemClickListener { locationData ->
+            Log.d("SearchFragment", "Item clicked: $locationData")
+            val action = SearchFragmentDirections.actionSearchFragmentToLocationFragment(locationData)
             findNavController().navigate(action)
         }
     }
@@ -79,15 +83,22 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
         return true
     }
 
+    //TODO need to reformat
     private fun searchData(query: String?) {
         if (!query.isNullOrEmpty()) {
-            locationViewModel.searchLocation((query))
+            locationViewModel.searchLocation(query)
+
             locationViewModel.queryLocation.observe(viewLifecycleOwner) { locations ->
-                Log.d("SearchFragment", "Search location: $locations")
-                locationAdapter.submitList(locations)
+                if (!locations.isNullOrEmpty()) {
+                    weatherViewModel.getWeatherDataList(locations)
+                    weatherViewModel.weatherDataList.observe(viewLifecycleOwner) { weatherDataList ->
+                        locationAdapter.submitList(weatherDataList)
+                    }
+                } else {
+                    locationAdapter.submitList(emptyList())
+                }
             }
-        }
-        else {
+        } else {
             locationAdapter.submitList(emptyList())
         }
     }

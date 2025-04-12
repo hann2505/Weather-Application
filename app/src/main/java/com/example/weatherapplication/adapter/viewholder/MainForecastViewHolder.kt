@@ -13,5 +13,7 @@ class MainForecastViewHolder(private val binding: MainForecastItemBinding) : Rec
         binding.temperature.text = binding.root.context.getString(R.string.temp_c, mainForecast.temp)
         binding.time.text = mainForecast.localtime
         binding.weatherCondition.text = mainForecast.condition.text
+        binding.highestTemp.text = binding.root.context.getString(R.string.highest_temp, mainForecast.maxtemp_c)
+        binding.lowestTemp.text = binding.root.context.getString(R.string.lowest, mainForecast.mintemp_c)
     }
 }

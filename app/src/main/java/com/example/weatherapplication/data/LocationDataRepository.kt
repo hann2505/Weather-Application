@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.example.weatherapplication.api.RetrofitInstance
-import com.example.weatherapplication.entity.LocationData
+import com.example.weatherapplication.entity.LocationSearchData
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -34,7 +34,7 @@ class LocationDataRepository {
         }
     }
 
-    suspend fun searchLocation(query: String): List<LocationData> {
+    suspend fun searchLocation(query: String): List<LocationSearchData> {
         val response = RetrofitInstance.api.searchLocation(location = query)
         return if (response.isSuccessful) response.body() ?: emptyList() else emptyList()
     }
