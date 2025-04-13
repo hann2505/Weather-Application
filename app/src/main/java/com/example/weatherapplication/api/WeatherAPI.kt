@@ -24,6 +24,6 @@ interface WeatherAPI {
     suspend fun getWeatherData(
         @Query("key") apiKey: String = API_KEY,
         @Query("q") location: String,
-        @Query("days") days: Int = 3
+        @Query("days") days: Int = 10
     ): Response<WeatherData>
 }

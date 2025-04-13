@@ -13,8 +13,6 @@ class HourlyForecastViewHolder(private val binding: HourlyForecastWeatherBinding
 
     private val hourlyForecastAdapter = HourlyForecastAdapter()
 
-    private val hourlyForecastList = mutableListOf<HourForecast>()
-
     fun setupRecyclerView() {
         binding.hourlyForecastRecyclerView.layoutManager = LinearLayoutManager(
             binding.root.context,
@@ -25,8 +23,6 @@ class HourlyForecastViewHolder(private val binding: HourlyForecastWeatherBinding
     }
 
     fun submitList(list: List<HourForecast>) {
-        hourlyForecastList.clear()
-        hourlyForecastList.addAll(list)
-        hourlyForecastAdapter.submitList(hourlyForecastList)
+        hourlyForecastAdapter.submitList(list)
     }
 }

@@ -62,7 +62,8 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.submitList((items[position] as DayForecast).hour)
             }
             is DailyForecastViewHolder -> {
-                holder.bindData(items[position] as Forecast)
+                holder.setupRecyclerView()
+                holder.submitList((items[position] as Forecast).forecastDay)
             }
         }
     }

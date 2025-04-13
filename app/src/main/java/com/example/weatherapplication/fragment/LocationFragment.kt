@@ -61,6 +61,11 @@ class LocationFragment : Fragment() {
         proceedWithCurrentLocation()
         setupRecyclerView()
 
+        binding.refreshLayout.setOnRefreshListener {
+            proceedWithCurrentLocation()
+            binding.refreshLayout.isRefreshing = false
+        }
+
         mLocationViewModel.location.observe(viewLifecycleOwner) { location ->
             mMainViewModel.weatherData.observe(viewLifecycleOwner) { weatherData ->
                 val mainForecast = MainForecast(

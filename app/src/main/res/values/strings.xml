@@ -11,5 +11,9 @@
     <string name="search_for_a_location">Search for a location</string>
     <string name="my_location">My Location</string>
     <string name="temp_c">%1$.1f °</string>
+    <string name="hourly_forecast">HOURLY FORECAST</string>
+    <string name="_10_day_forecast">10-DAY FORECAST</string>
+    <string name="day">day</string>
+    <string name="chance_of_rain">%1$d%%</string>
 
 </resources>
