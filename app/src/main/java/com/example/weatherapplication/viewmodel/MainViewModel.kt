@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weatherapplication.R
 import com.example.weatherapplication.data.LocationDataRepository
 import com.example.weatherapplication.data.WeatherDataRepository
 import com.example.weatherapplication.entity.LocationSearchData

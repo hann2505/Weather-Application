@@ -15,4 +15,13 @@
     <color name="thunder_1">#4b0081</color>
     <color name="thunder_2">#6a5acd</color>
     <color name="thunder_3">#9370db</color>
+    <color name="foggy_1">#778899</color>
+    <color name="foggy_2">#B0C4DE</color>
+    <color name="foggy_3">#C0C0C0</color>
+    <color name="rainy_1">#84b0d8</color>
+    <color name="rainy_2">#5780c5</color>
+    <color name="rainy_3">#83bbd6</color>
+    <color name="snowy_1">#d1e5e7</color>
+    <color name="snowy_2">#b5cdd6</color>
+    <color name="snowy_3">#9bb1bd</color>
 </resources>

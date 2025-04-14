@@ -3,14 +3,17 @@ package com.example.weatherapplication.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.weatherapplication.adapter.viewholder.AtmosphericConditionsViewHolder
 import com.example.weatherapplication.adapter.viewholder.DailyForecastViewHolder
 import com.example.weatherapplication.adapter.viewholder.HourlyForecastViewHolder
 import com.example.weatherapplication.adapter.viewholder.MainForecastViewHolder
+import com.example.weatherapplication.databinding.AtmosphericConditionWeatherBinding
 import com.example.weatherapplication.databinding.DailyForecastWeatherBinding
 import com.example.weatherapplication.databinding.HourlyForecastWeatherBinding
 import com.example.weatherapplication.databinding.MainForecastItemBinding
 import com.example.weatherapplication.entity.DayForecast
 import com.example.weatherapplication.entity.Forecast
+import com.example.weatherapplication.entity.WeatherData
 import com.example.weatherapplication.entity.forecast.MainForecast
 
 class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -21,6 +24,7 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         private const val TYPE_MAIN_FORECAST = 0
         private const val TYPE_HOURLY_FORECAST = 1
         private const val TYPE_DAILY_FORECAST = 2
+        private const val TYPE_ATMOSPHERIC_CONDITIONS = 3
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -46,6 +50,13 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     false
                 )
             )
+            TYPE_ATMOSPHERIC_CONDITIONS -> AtmosphericConditionsViewHolder(
+                AtmosphericConditionWeatherBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -65,6 +76,10 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.setupRecyclerView()
                 holder.submitList((items[position] as Forecast).forecastDay)
             }
+            is AtmosphericConditionsViewHolder -> {
+                holder.bindData(items[position] as WeatherData)
+            }
+            else -> throw IllegalArgumentException("Invalid view holder type")
         }
     }
 
@@ -73,6 +88,7 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is MainForecast -> TYPE_MAIN_FORECAST
             is DayForecast -> TYPE_HOURLY_FORECAST
             is Forecast -> TYPE_DAILY_FORECAST
+            is WeatherData -> TYPE_ATMOSPHERIC_CONDITIONS
             else -> throw IllegalArgumentException("Invalid item type")
         }
     }
@@ -85,6 +101,11 @@ class WeatherAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun addSecond(item: Any) {
         items.add(1, item)
+        notifyDataSetChanged()
+    }
+
+    fun addThird(item: Any) {
+        items.add(2, item)
         notifyDataSetChanged()
     }
 

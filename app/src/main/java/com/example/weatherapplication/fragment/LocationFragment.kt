@@ -15,8 +15,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.weatherapplication.R
 import com.example.weatherapplication.adapter.WeatherAdapter
 import com.example.weatherapplication.databinding.FragmentLocationBinding
+import com.example.weatherapplication.entity.WeatherData
 import com.example.weatherapplication.entity.forecast.MainForecast
 import com.example.weatherapplication.viewmodel.LocationViewModel
 import com.example.weatherapplication.viewmodel.MainViewModel
@@ -78,10 +80,18 @@ class LocationFragment : Fragment() {
                 )
                 Log.d("LocationFragment", "MainForecast: $mainForecast")
 
+                val background = getWeatherBackgroundRes(weatherData.current.condition.code, weatherData.current.isDay)
+
+                binding.refreshLayout.setBackgroundResource(background)
+
                 weatherAdapter.addFirst(mainForecast)
                 weatherAdapter.addSecond(weatherData.forecast.forecastDay[0])
-                weatherAdapter.addLast(weatherData.forecast)
+                weatherAdapter.addThird(weatherData.forecast)
+                weatherAdapter.addLast(weatherData)
 
+                binding.chartBtn.setOnClickListener {
+                    navigateToChartBottomSheetDialog(weatherData)
+                }
             }
 
         }
@@ -156,5 +166,25 @@ class LocationFragment : Fragment() {
     private fun navigateToSearchFragment() {
         val action = LocationFragmentDirections.actionLocationFragmentToSearchFragment()
         findNavController().navigate(action)
+    }
+
+    private fun navigateToChartBottomSheetDialog(weatherData: WeatherData) {
+        val action = LocationFragmentDirections.actionLocationFragmentToChartBottomSheetDialog(weatherData)
+        findNavController().navigate(action)
+    }
+
+    fun getWeatherBackgroundRes(conditionCode: Int, isDay: Int): Int {
+        Log.d("LocationFragment", "Condition code: $conditionCode, isDay: $isDay")
+        return when (conditionCode) {
+            1000 -> if (isDay == 1) R.drawable.gradient_blue else R.drawable.gradient_black
+            1003, 1006 -> R.drawable.gradient_gray
+            1009 -> R.drawable.gradient_gray
+            in 1273..1276 -> R.drawable.gradien_thunder
+            in 1030..1135 -> R.drawable.gradient_foggy
+            in 1150..1195 -> R.drawable.gradient_rainy
+            in 1204..1207 -> R.drawable.gradient_snowy
+            in 1210..1225 -> R.drawable.gradient_snowy
+            else -> R.drawable.gradient_blue
+        }
     }
 }

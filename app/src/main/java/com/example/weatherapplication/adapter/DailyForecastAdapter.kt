@@ -18,7 +18,7 @@ class DailyForecastAdapter : RecyclerView.Adapter<DailyForecastAdapter.DailyFore
         fun bindData(dailyForecast: DayForecast) {
             binding.day.text = TimeConverter.getDayOfWeek(dailyForecast.date)
             Glide.with(binding.root.context).load("https:${dailyForecast.day.condition.icon}").into(binding.icon)
-            binding.chanceOfRain.text = binding.root.context.getString(R.string.chance_of_rain, dailyForecast.day.chanceOfRain)
+            binding.chanceOfRain.text = binding.root.context.getString(R.string.ratio, dailyForecast.day.chanceOfRain)
             binding.lowestTemp.text = dailyForecast.day.mintemp_c.toString()
             binding.highestTemp.text = dailyForecast.day.maxtemp_c.toString()
         }
