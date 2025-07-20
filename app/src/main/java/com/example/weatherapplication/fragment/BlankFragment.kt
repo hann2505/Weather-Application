@@ -20,8 +20,9 @@ class BlankFragment : Fragment() {
         }.start()
         val user: User? = null
         val name = user!!.name
-
         val apiKey = "AIzaSy...MyRealKey123"
+        val url = "https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$name"
+        
         return inflater.inflate(R.layout.fragment_blank, container, false)
     }
 }
